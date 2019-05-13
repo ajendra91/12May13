@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+
+<h1 id="ab"></h1><h1 id="emp"></h1>
+<button onclick="fun()">click ajax getAll</button>
+
+
+<button onclick="fun3()">click javascript getAll</button>
+<button onclick="fun4()">click javascript post</button>
+
+<form>
+    <input id="id">
+    <input id="name">
+    <input id="age">
+
+    <button>Submit</button>
+
+</form>
+
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+
+
+<script>
+    $(document).ready(function(){
+
+
+        $.ajax({
+            url: "http://localhost:9090/emp/1",
+            success:function(result){
+                $("#emp").html(result.name);
+            }
+        })
+    })
+
+    function fun(){
+        $.ajax({
+            type: "GET",
+            url: "http://localhost:9090/emp",
+            success:function(result){
+                $.each(result.data,
+                    function(i,emp){
+                        var user=emp.id+""+emp.name+""+emp.age;
+                        $("#ab").append(user);
+                    }
+                )
+            }
+
+        })
+    }
+
+    $("form").submit(function(){
+        var user={
+            id: $("#id").val(),
+            name: $("#name").val(),
+            age: $("#age").val()
+        }
+        $.ajax({
+            type: "POST",
+            url: "http://localhost:9090/emp",
+            contentType: "application/json",
+            dataType: "json",
+            data: JSON.stringify(user),
+
+            success:function(result){
+                $("#ab").html(result.name);
+            }
+        })
+
+    })
+
+
+    function fun3(){
+        const http= new XMLHttpRequest();
+        const url= "http://localhost:9090/emp";
+        http.onreadystatechange=(e)=>{
+            ab.innerHTML= http.responseText;
+        }
+        http.open("GET",url);
+        http.send();
+    }
+
+
+    function fun4(){
+        var user={
+            id: 1,
+            name: "java",
+            age: "22"
+        }
+
+        const http= new XMLHttpRequest();
+        const url= "http://localhost:9090/emp";
+        http.onreadystatechange=(e)=>{
+            if(this.readyState==0 && this.status==200){
+                    ab.innerHTML= this.responseText;
+            }
+
+        }
+        http.open("post",url,true);
+        http.setRequestHeader("application/json");
+        http.send(JSON.stringify(user));
+    }
+
+</script>
+
+
+</body>
+</html>
